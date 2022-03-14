@@ -249,7 +249,7 @@ options:
               - Datasource validate on match.
             type: str
             default: 'undefined'
-            
+
       xadatasources:
         description:
           - XA Datasource configurations.
@@ -321,13 +321,17 @@ options:
 
           background_validation:
             description:
-              - 
+              - The validate-on-match element indicates whether or not 
+                connection level validation should be done when a connection 
+                factory attempts to match a managed connection for a given set.
             type: bool
             default: 'undefined'
-
+            
           valid_connection_checker_class_name:
             description:
-              - .
+              - An org.jboss.jca.adapters.jdbc.ValidConnectionChecker that 
+                provides a SQLException isValidConnection(Connection e) method 
+                to validate is a connection is valid.
             type: str
             default: 'undefined'
 
@@ -339,19 +343,23 @@ options:
 
           exception_sorter_class_name:
             description:
-              - Datasource .
+              - Which exception sorter class should be used.
             type: str
             default: 'undefined'
           
           same_rm_override:
             description:
-              - .
+              - The same-rm-override element allows one to unconditionally set 
+                whether the javax.transaction.xa.XAResource.isSameRM(XAResource) 
+                returns true or false.
             type: bool
             default: 'undefined'
             
           background_validation_millis:
             description:
-              - .
+              - The background-validation-millis element specifies the amount of 
+                time, in milliseconds, that background validation will run. 
+                Changing this value require a server restart.
             type: int
             default: 'undefined'
 
@@ -1330,8 +1338,8 @@ def main():
                                     use_java_context=dict(
                                         type='str', default='true'),
                                     xa_datasource_properties=dict(
-                                        type='dict', required=True options=dict(
-                                          url=dict(type='str' required=False)
+                                        type='dict', required=True, options=dict(
+                                          url=dict(type='str', required=False)
                                         )),
                                     driver_name=dict(
                                         type='str', required=True),
