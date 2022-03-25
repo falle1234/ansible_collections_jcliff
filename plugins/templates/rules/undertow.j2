@@ -1,0 +1,44 @@
+{ 
+    "undertow" => {
+        {% if 'configuration' in values %}
+        "configuration" => {
+            {% if 'filter' in values['configuration'] %}
+            "filter" => {
+                {% if 'gzip' in values['configuration']['filter'] %}
+                "gzip" => {
+                    "gzipfilter" => {}
+                }
+                {% endif %}
+            }
+            {% endif %}
+        },
+        {% endif %}
+        {% if 'server' in values %}
+        "server" => {
+            {% for server in values['server'] %}
+            "{{ server['name']}}" => {
+                {% if 'host' in server %}
+                "host" => {
+                    {% for host in server['host'] %}
+                    "{{ host['name'] }}" => {
+                        {% if 'filter_ref' in host %}
+                        "filter-ref" => {
+                            {% if 'gzipfilter' in host['filter_ref'] %}
+                            "gzipfilter" => {
+                                "predicate" => "{{ host['filter_ref']['gzip_filter']['predicate'] }}"
+                            }
+                            {% endif %}
+                        }
+                        {% endif %}
+                    },
+                    {% endfor %}
+                }
+                {% endif %}
+            },
+            {% endfor %}            
+        }
+        {% endif %}
+    }
+}
+
+    
