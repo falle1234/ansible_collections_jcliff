@@ -126,7 +126,7 @@ options:
         description:
           - JDBC driver configurations.
         type: list
-        elements: dict
+        elemenAts: dict
         suboptions:
           driver_name:
             description:
