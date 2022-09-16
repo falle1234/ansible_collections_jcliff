@@ -242,114 +242,117 @@ options:
         description:
           - XA Datasource configurations.
         type: list
+        elements: dict
         suboptions:
-
           name:
             description:
               - Datasource name.
             type: str
             required: True
-
           pool_name:
             description:
               - Name of the datasource pool.
             type: str
-
           jndi_name:
             description:
               - JNDI name.
             type: str
             required: True
-
           use_java_context:
             description:
               - Use the Java context.
             type: str
             default: 'true'
-
           xa_datasource_properties:
             description:
               - Properties for XA datasource
-            type: str
+            type: dict
+            suboptions:
+              url:
+                description:
+                  - url for this datasource
+                type: str
+                required: True
             required: True
-
           driver_name:
             description:
               - Name of the driver.
             type: str
             required: True
-
+          xa_datasource_class:
+            description:
+              - The fully qualified name of the javax.sql.XADataSource implementation
+            type: str
           enabled:
             description:
               - Whether the datasource is enabled.
             type: str
             default: 'true'
-
           password:
             description:
               - Datasource password.
             type: str
-
           user_name:
             description:
               - Datasource user name.
             type: str
-
           no_recovery:
             description:
               - Should datasource attempt recovery.
             type: bool
-            default: 'undefined'
-
           validate_on_match:
             description:
-              - 
-            type: bool
-            default: 'undefined'
-
-          background_validation:
-            description:
-              - The validate-on-match element indicates whether or not 
-                connection level validation should be done when a connection 
-                factory attempts to match a managed connection for a given set.
-            type: bool
-            default: 'undefined'
-            
-          valid_connection_checker_class_name:
-            description:
-              - An org.jboss.jca.adapters.jdbc.ValidConnectionChecker that 
-                provides a SQLException isValidConnection(Connection e) method 
-                to validate is a connection is valid.
+              - The validate-on-match element indicates whether or not
+              - connection level validation should be done when a connection
+              - factory attempts to match a managed connection for a given set.
             type: str
             default: 'undefined'
-
+          background_validation:
+            description:
+              - Specifies that connections are validated on a background thread,
+              - rather than being validated prior to use.
+              - Mutually exclusive to validate-on-match.
+            type: bool
+          valid_connection_checker_class_name:
+            description:
+              - An org.jboss.jca.adapters.jdbc.ValidConnectionChecker that
+              - provides a SQLException isValidConnection(Connection e) method
+              - to validate is a connection is valid.
+            type: str
+            default: 'undefined'
           check_valid_connection_sql:
             description:
               - Datasource SQL query for checking a valid connection.
             type: str
             default: 'undefined'
-
           exception_sorter_class_name:
             description:
               - Which exception sorter class should be used.
             type: str
             default: 'undefined'
-          
           same_rm_override:
             description:
-              - The same-rm-override element allows one to unconditionally set 
-                whether the javax.transaction.xa.XAResource.isSameRM(XAResource) 
-                returns true or false.
+              - The same-rm-override element allows one to unconditionally set
+              - whether the javax.transaction.xa.XAResource.isSameRM(XAResource)
+              - returns true or false.
             type: bool
-            default: 'undefined'
-            
           background_validation_millis:
             description:
-              - The background-validation-millis element specifies the amount of 
-                time, in milliseconds, that background validation will run. 
-                Changing this value require a server restart.
+              - The background-validation-millis element specifies the amount of
+              - time, in milliseconds, that background validation will run.
+              - Changing this value require a server restart.
             type: int
-            default: 'undefined'
+          min_pool_size:
+            description:
+              - The min-pool-size element specifies the minimum number of
+              - connections for a pool.
+            type: int
+          max_pool_size:
+            description:
+              - The max-pool-size element specifies the maximum number of
+              - connections for a pool. No more connections will be created
+              - in each sub-pool
+            type: int
 
       system_properties:
         description:
@@ -567,16 +570,30 @@ options:
         type: list
         elements: dict
         suboptions:
-          name:
+          logger:
             description:
-              - Replace name with name of the log category
-            type: str
-            required: True
-          level:
+              - Defines a logger category
+            type: list
+            elements: dict
+            suboptions:
+              name:
+                description:
+                  - Replace name with name of the log category
+                type: str
+                required: True
+              level:
+                description:
+                  - Replace level with log level that is to be set
+                type: str
+                required: False
+          add_logging_api_dependencies:
             description:
-              - Replace level with log level that is to be set
-            type: str
-            required: False
+              - Should logging API dependencies be added to deployments during the deployment process
+            type: bool
+          use_deployment_logging_config:
+            description:
+              - Should deployments use a logging configuration file found in the deployment
+            type: bool
       mail:
         description:
           - mail.
@@ -888,18 +905,19 @@ options:
           server_property:
             description:
               - Creates and sets messaging-activemq server properties.
-              type: list
-              suboptions:
-                name:
-                  description:
-                    - Name of property.
-                  type: str
-                  required: True
-                value:
-                  description:
-                    - Value of property.
-                  type: str
-                  required: True
+            type: list
+            elements: dict
+            suboptions:
+              name:
+                description:
+                  - Name of property.
+                type: str
+                required: True
+              value:
+                description:
+                  - Value of property.
+                type: str
+                required: True
           jms_queue:
             description:
               - Create JMS queue
@@ -985,6 +1003,7 @@ options:
                 description:
                   - Legacy entries
                 type: list
+                elements: str
                 required: False
               discovery_group:
                 description:
@@ -1385,27 +1404,29 @@ def main():
                                         type='str', default='true'),
                                     xa_datasource_properties=dict(
                                         type='dict', required=True, options=dict(
-                                          url=dict(type='str', required=False)
-                                        )),
+                                            url=dict(type='str', required=True))),
                                     driver_name=dict(
                                         type='str', required=True),
+                                    xa_datasource_class=dict(type='str', required=False),
                                     enabled=dict(type='str', default='true'),
-                                    password=dict(type='str', required=False),
+                                    password=dict(type='str', required=False, no_log=True),
                                     user_name=dict(type='str', required=False),
                                     no_recovery=dict(
-                                        type='bool', default='undefined'),
+                                        type='bool'),
                                     validate_on_match=dict(type='str', default='undefined'),
                                     background_validation=dict(
-                                        type='bool', default='undefined'),
+                                        type='bool'),
                                     valid_connection_checker_class_name=dict(
                                         type='str', default='undefined'),
                                     exception_sorter_class_name=dict(
                                         type='str', default='undefined'),
                                     check_valid_connection_sql=dict(
                                         type='str', default='undefined'),
-                                    same_rm_override=dict(type='bool', default='undefined'),
-                                    background_validation_millis=dict(type='int', default='undefined'),
-                                    )),
+                                    same_rm_override=dict(type='bool'),
+                                    background_validation_millis=dict(type='int'),
+                                    min_pool_size=dict(type='int'),
+                                    max_pool_size=dict(type='int'),
+                                )),
                             system_properties=dict(
                                 type='list', required=False, elements='dict', options=dict(
                                     name=dict(type='str', required=False),
@@ -1439,8 +1460,13 @@ def main():
                                     virtual=dict(type='bool', required=False))),
                             logging=dict(
                                 type='list', required=False, elements='dict', options=dict(
-                                    name=dict(type='str', required=True),
-                                    level=dict(type='str', required=False))),
+                                    logger=dict(
+                                        type='list', required=False, elements='dict', options=dict(
+                                            name=dict(type='str', required=True),
+                                            level=dict(type='str', required=False))),
+                                    add_logging_api_dependencies=dict(type='bool', required=False),
+                                    use_deployment_logging_config=dict(type='bool', required=False)
+                                    )),
                             mail=dict(
                                 type='list', required=False, elements='dict', options=dict(
                                     name=dict(type='str', required=True),
@@ -1514,7 +1540,8 @@ def main():
                                     server_property=dict(
                                         type='list', required=False, elements='dict', options=dict(
                                             name=dict(type='str', required=True),
-                                            value=dict(type='str', required=True))),
+                                            value=dict(type='str', required=True),
+                                        )),
                                     jms_queue=dict(
                                         type='list', required=False, elements='dict', options=dict(
                                             name=dict(type='str', required=True),
@@ -1535,7 +1562,7 @@ def main():
                                         type='list', required=False, elements='dict', options=dict(
                                             name=dict(type='str', required=True),
                                             entries=dict(type='list', required=True, elements='str'),
-                                            connectors=dict(type='str', required=False),
+                                            connectors=dict(type='list', required=False, elements='str'),
                                             discovery_group=dict(type='str', required=False),
                                         )),
                                     connector=dict(

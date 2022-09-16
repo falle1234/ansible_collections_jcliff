@@ -7,13 +7,16 @@
     app: /tmp/simple-webapp.war
     gdrive_url: 'https://drive.google.com/uc?export=download&id='
     app_url: "{{ gdrive_url }}1w9ss5okctnjUvRAxhPEPyC7DmbUwmbhb"
+    wildfly_home: "/opt/wildfly/wildfly-26.0.0.Final/"
   collections:
     - middleware_automation.wildfly
     - middleware_automation.jcliff
-  roles:
-    - wildfly_install
-    - wildfly_systemd
   tasks:
+
+    - include_role:
+        name: wildfly_install
+    - include_role:
+        name: wildfly_systemd
 
     - include_role:
         name: ../../roles/jcliff
