@@ -11,6 +11,8 @@
     {% if 'user_name' in values %} "user-name" => "{{ values['user_name'] }}", {% endif %}
     {% if 'enabled' in values %} "enabled" => "{{ values['enabled'] }}", {% endif %}
     {% if 'no_recovery' in values %} "no-recovery" => "{{ values['no_recovery'] }}", {% endif %}
+    {% if 'recovery_password' in values %} "recovery-password" => "{{ values['recovery_password'] }}", {% endif %}
+    {% if 'recovery_username' in values %} "recovery-username" => "{{ values['recovery_username'] }}", {% endif %}
     {% if 'validate_on_match' in values %} "validate-on-match" => "{{ values['validate_on_match'] }}", {% endif %}
     {% if 'background_validation' in values %} "background-validation" => "{{ values['background_validation'] }}", {% endif %}
     {% if 'valid_connection_checker_class_name' in values %} "valid-connection-checker-class-name" => "{{ values['valid_connection_checker_class_name'] }}", {% endif %}

@@ -300,6 +300,14 @@ options:
             description:
               - Should datasource attempt recovery.
             type: bool
+          recovery_password:
+            description:
+              - The password used for recovery.
+            type: str
+          recovery_username:
+            description:
+              - The user name used for recovery.
+            type: str
           validate_on_match:
             description:
               - The validate-on-match element indicates whether or not
@@ -1477,6 +1485,8 @@ def main():
                                     user_name=dict(type='str', required=False),
                                     no_recovery=dict(
                                         type='bool'),
+                                    recovery_password=dict(type='str', required=False, no_log=True),
+                                    recovery_username=dict(type='str', required=False),
                                     validate_on_match=dict(type='str', default='undefined'),
                                     background_validation=dict(
                                         type='bool'),
