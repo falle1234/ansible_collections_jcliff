@@ -14,6 +14,7 @@
     {% if 'validate_on_match' in values %} "validate-on-match" => "{{ values['validate_on_match'] }}", {% endif %}
     {% if 'background_validation' in values %} "background-validation" => "{{ values['background_validation'] }}", {% endif %}
     {% if 'valid_connection_checker_class_name' in values %} "valid-connection-checker-class-name" => "{{ values['valid_connection_checker_class_name'] }}", {% endif %}
+    {% if 'stale_connection_checker_class_name' in values %} "stale-connection-checker-class-name" => "{{ values['stale_connection_checker_class_name'] }}", {% endif %}
     {% if 'exception_sorter_class_name' in values %} "exception-sorter-class-name" => "{{ values['exception_sorter_class_name'] }}", {% endif %}
     {% if 'same_rm_override' in values %} "same-rm-override" => "{{ values['same_rm_override'] }}", {% endif %}
     {% if 'background_validation_millis' in values %} "background-validation-millis" => "{{ values['background_validation_millis'] }}", {% endif %}

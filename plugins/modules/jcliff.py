@@ -320,6 +320,14 @@ options:
               - to validate is a connection is valid.
             type: str
             default: 'undefined'
+          stale_connection_checker_class_name:
+            description:
+              - An org.jboss.jca.adapters.jdbc.StaleConnectionChecker that
+              - provides an isStaleConnection(SQLException) method which if
+              - it returns true will wrap the exception in an
+              - org.jboss.jca.adapters.jdbc.StaleConnectionException
+            type: str
+            default: 'undefined'
           check_valid_connection_sql:
             description:
               - Datasource SQL query for checking a valid connection.
@@ -1473,6 +1481,8 @@ def main():
                                     background_validation=dict(
                                         type='bool'),
                                     valid_connection_checker_class_name=dict(
+                                        type='str', default='undefined'),
+                                    stale_connection_checker_class_name=dict(
                                         type='str', default='undefined'),
                                     exception_sorter_class_name=dict(
                                         type='str', default='undefined'),
